@@ -13,8 +13,10 @@ MyData2 <- select(MyData1, Total, Taxon, Scenario, Nutrients)
 #Convert total from mg to g and make this a new column to replace "Total"
 MyData3 <- transmute(MyData2, TotalG = Total*0.001, Taxon, Scenario, Nutrients)
 
-#Replace strings under "Nutrients" column with first letter only
-newNutrients <- factor(c(gsub("(\\w)\\w+", "\\1", MyData3$Nutrients)))
+#If "Nutrients" column exists, replace strings under "Nutrients" with first letter only
+newNutrients <- if ("Nutrients" %in% colnames(MyData3)) {
+  factor(c(gsub("(\\w)\\w+", "\\1", MyData3$Nutrients)))
+}
 MyData4 <- transmute(MyData3, TotalG, Taxon, Scenario, Nutrients = newNutrients)
 
 #Replace periods under"TotalG" column with commas
